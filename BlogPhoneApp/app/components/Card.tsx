@@ -1,11 +1,24 @@
-import { Pressable, View, Image, Text, StyleSheet, Platform } from 'react-native';
-import { BlurView } from 'expo-blur';
+import { ActivityIndicator, Pressable, View, Image, Text, StyleSheet, Platform } from 'react-native';
+import { useFonts } from 'expo-font';
+import React, { useEffect, useState } from 'react';
 
 export default function Card() {
+
+    const [loaded, error] = useFonts({
+        'lora-bold-italic': require('../../assets/fonts/Lora/static/Lora-BoldItalic.ttf'),
+        'lora-bold': require('../../assets/fonts/Lora/static/Lora-Bold.ttf')
+      });
+    
+      useEffect(() => {
+        if (!loaded) {
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#00416A" />;
+          </View>
+        }
+      }, [loaded, error]);
+
     return (
         <View style={styles.card}>
-            <BlurView
-                intensity={50} style={styles.blurContainer}>
                 
                 <Image
                     source={require("../../assets/images/News article resources/Putin.jpg")}
@@ -14,7 +27,7 @@ export default function Card() {
                 />
 
                 <View>
-                    <Text style={styles.text}>
+                    <Text style={[styles.text, {padding: 2, marginBlock: 10}]}>
                         Putin has been captured since the war in Ukraine!
                     </Text>
 
@@ -26,7 +39,6 @@ export default function Card() {
                         <Text style={styles.buttonText}>Click to learn more</Text>
                     </Pressable>
                 </View>
-            </BlurView>
         </View>
     );
 }
@@ -43,7 +55,7 @@ const styles = StyleSheet.create({
     },
     card: {
         height: 'auto',
-        width: 300,
+        width: 350,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
@@ -59,15 +71,8 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     text: {
-        ...Platform.select({
-            ios: {
-                fontFamily: "System",
-            },
-            android: {
-                fontFamily: "Roboto",
-            },
-        }),
-        color: 'yellow',
+        fontFamily: "lora-bold",
+        color: 'black',
         fontSize: 17,
         fontWeight: 'bold',
     },
@@ -84,11 +89,16 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 6,
         elevation: 5, 
-        height: 70,
+        height: 50,
     },
     buttonText: {
         color: "white", 
         fontSize: 18,
         fontWeight: 'bold', 
-    }
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
 });
