@@ -4,7 +4,7 @@ import { useFonts } from 'expo-font';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Account from './components/Account';
 import Home from './components/Home';
-import { NavigationContainer } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,7 +23,31 @@ export default function App() {
   }
 
   return (
-      <Tab.Navigator>
+      <Tab.Navigator screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName: React.ComponentProps<typeof Ionicons>['name'];
+
+            if (route.name === 'Home') {
+              iconName = focused ? 'home' : 'home-outline';
+            } else {
+              iconName = focused ? 'person' : 'person-outline';
+            }
+
+            return <Ionicons key={iconName} name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: 'tomato',
+          tabBarInactiveTintColor: 'gray',
+          headerTitleAlign: "center",
+          tabBarStyle: {
+            backgroundColor: '#C4E560',
+            height: 60,
+          },
+          headerStyle: {
+            backgroundColor: '#C4E560',
+            height: 60,
+          },
+          animation: "shift",
+        })}>
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Account" component={Account} />
       </Tab.Navigator>
