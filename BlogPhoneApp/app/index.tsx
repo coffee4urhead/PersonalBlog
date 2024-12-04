@@ -3,7 +3,7 @@ import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useFonts } from 'expo-font';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Account from './components/Account';
-import Home from './components/Home';
+import HomeStack from './components/HomeStack';
 import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
@@ -48,7 +48,7 @@ export default function App() {
           },
           animation: "shift",
         })}>
-        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="HomeTab" component={HomeStack} />
         <Tab.Screen name="Account" component={Account} />
       </Tab.Navigator>
   );

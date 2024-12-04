@@ -1,9 +1,20 @@
 import { ActivityIndicator, Pressable, View, Image, Text, StyleSheet, Platform } from 'react-native';
 import { useFonts } from 'expo-font';
 import React, { useEffect, useState } from 'react';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-export default function Card() {
+interface ICardProps {
+    postId: number;
+    onPress: () => void;
+}
 
+export type HomeStackParamList = {
+    Home: undefined;
+    Account: undefined;
+    FullPost: { postId: number }; 
+};
+  
+export default function Card({onPress, postId} : ICardProps) {
     const [loaded, error] = useFonts({
         'lora-bold-italic': require('../../assets/fonts/Lora/static/Lora-BoldItalic.ttf'),
         'lora-bold': require('../../assets/fonts/Lora/static/Lora-Bold.ttf')
@@ -35,7 +46,7 @@ export default function Card() {
                         Vladimir Putin's feelings and motivations during the ongoing war in Ukraine seem deeply tied to his view of Russia's security and his desire to maintain or restore Russian influence over Ukraine.
                     </Text>
 
-                    <Pressable style={styles.mainButton}>
+                    <Pressable style={styles.mainButton} onPress={onPress}>
                         <Text style={styles.buttonText}>Click to learn more</Text>
                     </Pressable>
                 </View>

@@ -2,11 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, SafeAreaView, StatusBar, View, Image, Text, StyleSheet, Platform, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts } from 'expo-font';
-import Card from './Card';
+import Card, { HomeStackParamList } from './Card';
 import Footer from "./Footer"
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export default function Home() {
 
+  const navigation = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
+    
+    const handleNavigateToFullPost = (paramNav: NativeStackNavigationProp<HomeStackParamList>, postId: number) => {
+        paramNav.navigate('FullPost', { postId });
+    };
+  
   const [loaded, error] = useFonts({
     'lora-bold-italic': require('../../assets/fonts/Lora/static/Lora-BoldItalic.ttf'),
     'lora-bold': require('../../assets/fonts/Lora/static/Lora-Bold.ttf')
@@ -58,10 +66,10 @@ export default function Home() {
             <Image source={require("../../assets/images/News article resources/Saturn01.png")} style={[styles.picEffect, {top: 1700, left: 100}]}></Image>
 
           <View style={styles.overlay}>
-            <Card />
-            <Card />
-            <Card />
-            <Card />
+            <Card postId={1} onPress={() => handleNavigateToFullPost(navigation, 1)}/>
+            <Card postId={2} onPress={() => handleNavigateToFullPost(navigation, 2)}/>
+            <Card postId={3} onPress={() => handleNavigateToFullPost(navigation, 3)}/>
+            <Card postId={4} onPress={() => handleNavigateToFullPost(navigation, 4)}/>
           </View>
 
           <Footer/>
