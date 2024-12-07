@@ -11,6 +11,7 @@ interface ICardProps {
 export type HomeStackParamList = {
     Home: undefined;
     Account: undefined;
+    AccountPostScreen: undefined;
     FullPost: { postId: number }; 
 };
   
@@ -55,15 +56,6 @@ export default function Card({onPress, postId} : ICardProps) {
 }
 
 const styles = StyleSheet.create({
-    blurContainer: {
-        width: 300,
-        height: 400,
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 20,
-        borderRadius: 12,
-        overflow: 'hidden', 
-    },
     card: {
         height: 'auto',
         width: 350,
@@ -89,7 +81,7 @@ const styles = StyleSheet.create({
     },
     mainButton: {
         marginTop: 15,
-        backgroundColor: "#03cafc",
+        backgroundColor: "#DBA027",
         borderRadius: 12, 
         paddingVertical: 14, 
         paddingHorizontal: 30, 

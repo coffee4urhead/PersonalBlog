@@ -1,6 +1,5 @@
-import { Text, View, Image, SafeAreaView, ScrollView, StyleSheet } from "react-native";
+import { Text, View, Image, SafeAreaView, ImageBackground, ScrollView, StyleSheet } from "react-native";
 import Card from "./Card"
-import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { HomeStackParamList } from "./Card"
@@ -8,21 +7,19 @@ import { HomeStackParamList } from "./Card"
 
 export default function Account() {
     const navigation = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
-    
+
     const handleNavigateToFullPost = (paramNav: NativeStackNavigationProp<HomeStackParamList>, postId: number) => {
         paramNav.navigate('FullPost', { postId });
     };
 
     return (
-        <SafeAreaView>
-            <ScrollView>
-                <LinearGradient
-                    colors={['#F8C741', '#F14E2A']}
-                    start={{ x: 1, y: 0.5 }}
-                    end={{ x: 0.5, y: 1 }}
-                    style={styles.gradient}>
+        <View style={styles.background}>
+            <ImageBackground source={require("../../assets/images/News article resources/stars.webp")} resizeMode='cover' style={{ flex: 1 }}>
+                <ScrollView>
                     <View style={styles.headSection}>
-                        <Text style={styles.importantText}>Mihail Mihaylov</Text>
+                        <SafeAreaView>
+                            <Text style={styles.importantText}>Mihail Mihaylov</Text>
+                        </SafeAreaView>
 
                         <Image source={require("../../assets/images/News article resources/Putin.jpg")} style={styles.accountImage}></Image>
 
@@ -44,20 +41,24 @@ export default function Account() {
 
                             <View style={styles.postCards}>
                                 <Card postId={1} onPress={() => handleNavigateToFullPost(navigation, 1)} />
-                                <Card postId={2} onPress={() => handleNavigateToFullPost(navigation, 2)}/>
-                                <Card postId={3} onPress={() => handleNavigateToFullPost(navigation, 3)}/>
-                                <Card postId={4} onPress={() => handleNavigateToFullPost(navigation, 4)}/>
-                                <Card postId={5} onPress={() => handleNavigateToFullPost(navigation, 5)}/>
+                                <Card postId={2} onPress={() => handleNavigateToFullPost(navigation, 2)} />
+                                <Card postId={3} onPress={() => handleNavigateToFullPost(navigation, 3)} />
+                                <Card postId={4} onPress={() => handleNavigateToFullPost(navigation, 4)} />
+                                <Card postId={5} onPress={() => handleNavigateToFullPost(navigation, 5)} />
                             </View>
                         </View>
                     </View>
-                </LinearGradient>
-            </ScrollView>
-        </SafeAreaView>
+                </ScrollView>
+            </ImageBackground>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        backgroundColor: '#fada39',
+    },
     gradient: {
         flex: 1,
         justifyContent: 'center',
@@ -88,7 +89,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         flexWrap: "wrap",
         justifyContent: "space-evenly",
-        backgroundColor: "lightblue",
         gap: 20,
         alignItems: "center",
     },
