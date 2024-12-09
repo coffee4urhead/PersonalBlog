@@ -7,9 +7,9 @@ const Stack = createStackNavigator<HomeStackParamList>();
 
 export default function AccountStack() {
     return (
-        <Stack.Navigator initialRouteName="Account">
+        <Stack.Navigator>
             <Stack.Screen name="AccountPostScreen" component={Account} options={{ headerShown: false }} />
-            <Stack.Screen name="FullPost" component={FullPost} options={{ title: 'Full Post' }} />
+            <Stack.Screen name="FullPost" component={FullPost} options={{ title: 'Go back' }} />
         </Stack.Navigator>
     );
 }

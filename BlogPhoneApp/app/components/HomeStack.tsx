@@ -9,7 +9,7 @@ export default function HomeStack() {
     return (
         <Stack.Navigator initialRouteName="Home">
             <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-            <Stack.Screen name="FullPost" component={FullPost} options={{ title: 'Full Post' }} />
+            <Stack.Screen name="FullPost" component={FullPost} options={{ title: 'Go back' }} />
         </Stack.Navigator>
     );
 }
