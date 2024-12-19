@@ -13,6 +13,7 @@ export type HomeStackParamList = {
     Account: undefined;
     AccountPostScreen: undefined;
     FullPost: { postId: number }; 
+    LoginScreen: undefined;
 };
   
 export default function Card({onPress, postId} : ICardProps) {
