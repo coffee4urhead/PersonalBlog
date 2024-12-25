@@ -5,6 +5,7 @@ import { checkSchema, matchedData, validationResult } from "express-validator";
 import schemaUser from "./validation-schemas/userValidationSchema.mjs";
 
 import passport from "passport";
+import { localStrategy } from "./auth-strategies/localUserAuth.mjs";
 
 import { hashPassword } from "./hashers/passwordHasher.mjs";
 
@@ -24,7 +25,25 @@ const couch = nano({
     }
 });
 const blogDb = couch.db.use('blog-app');
-export { blog }
+
+async function createIndex() {
+    try {
+        const response = await blogDb.createIndex({
+            index: {
+                fields: ["username"],
+            },
+            name: "username-index",
+            type: "json",
+        });
+
+        console.log("Index created successfully:", response);
+    } catch (error) {
+        console.error("Error creating index:", error);
+    }
+}
+
+createIndex();
+export { blogDb }
 
 import cors from "cors"
 
@@ -41,15 +60,39 @@ app.use(session({
         signed: true,
     }
 }))
+passport.use(localStrategy);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors());
 app.use(express.json());
 
+
+
 app.get("/user/logged", (req, res) => {
-    const userLoggedIn = req.user ? true : false;
-    res.json({ loggedIn: userLoggedIn });
+    if (req.isAuthenticated()) {
+        return res.json({ loggedIn: true, user: req.user });
+    }
+    res.json({ loggedIn: false });
 });
+
+app.get("/user/logout", (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            return res.status(500).send("Error logging out");
+        }
+        res.redirect("/");
+    });
+});
+
+app.get("/user/login/failure", (req, res) => {
+    res.status(401).json({ message: "Login failed. Invalid username or password." });
+});
+
+app.get("/user/login", passport.authenticate("local", {
+    successRedirect: "/user/logged",
+    failureRedirect: "/user/login/failure",
+    failureFlash: true 
+}));
 
 app.post("/user/create", checkSchema(schemaUser), async (req, res) => {
     let validation = validationResult(req);
@@ -79,6 +122,10 @@ app.post("/user/create", checkSchema(schemaUser), async (req, res) => {
         res.send("The validation didn't pass");
     }
 });
+
+app.get("/", (req, res) => {
+    res.send("Hello to the initial page!");
+})
 
 app.listen(3000, () => {
     console.log("App listening on port 3000!");
