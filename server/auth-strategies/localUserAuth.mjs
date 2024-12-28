@@ -22,6 +22,9 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
+// we should make checks whether the username we are looking for is already created 
+// if it is we should prompt the user to type in a new username
+
 const localStrategy = new LocalStrategy(
     { usernameField: "username", passwordField: "password" },
     async (username, password, done) => {

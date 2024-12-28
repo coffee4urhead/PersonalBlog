@@ -1,19 +1,16 @@
 import express from "express";
 import { config as dotenvConfig } from "dotenv";
 
-import { checkSchema, matchedData, validationResult } from "express-validator";
-import schemaUser from "./validation-schemas/userValidationSchema.mjs";
-
 import passport from "passport";
 import { localStrategy } from "./auth-strategies/localUserAuth.mjs";
-
-import { hashPassword } from "./hashers/passwordHasher.mjs";
+import { googleAuthStrategy } from "./auth-strategies/googleAuth.mjs";
 
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import nano from "nano";
 
 import userRouter from "./routes/userRoute.mjs";
+import googleRouter from "./routes/googleAuthRoute.mjs";
 
 dotenvConfig();
 
@@ -30,7 +27,7 @@ const blogDb = couch.db.use('blog-app');
 
 async function createIndex() {
     try {
-        const response = await blogDb.createIndex({
+        await blogDb.createIndex({
             index: {
                 fields: ["username"],
             },
@@ -38,9 +35,17 @@ async function createIndex() {
             type: "json",
         });
 
-        console.log("Index created successfully:", response);
+        await blogDb.createIndex({
+            index: {
+                fields: ["email"],
+            },
+            name: "email-index",
+            type: "json",
+        });
+
+        console.log("Indexes created successfully");
     } catch (error) {
-        console.error("Error creating index:", error);
+        console.error("Error creating indexes:", error);
     }
 }
 
@@ -63,12 +68,14 @@ app.use(session({
     }
 }))
 passport.use(localStrategy);
+passport.use(googleAuthStrategy);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors());
 app.use(express.json());
 
 app.use("/user", userRouter);
+app.use("/google", googleRouter);
 
 app.get("/", (req, res) => {
     res.send("Hello to the initial page!");
