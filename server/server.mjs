@@ -13,6 +13,8 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import nano from "nano";
 
+import userRouter from "./routes/userRoute.mjs";
+
 dotenvConfig();
 
 const couch = nano({
@@ -66,62 +68,7 @@ app.use(passport.session());
 app.use(cors());
 app.use(express.json());
 
-
-
-app.get("/user/logged", (req, res) => {
-    if (req.isAuthenticated()) {
-        return res.json({ loggedIn: true, user: req.user });
-    }
-    res.json({ loggedIn: false });
-});
-
-app.get("/user/logout", (req, res) => {
-    req.logout((err) => {
-        if (err) {
-            return res.status(500).send("Error logging out");
-        }
-        res.redirect("/");
-    });
-});
-
-app.get("/user/login/failure", (req, res) => {
-    res.status(401).json({ message: "Login failed. Invalid username or password." });
-});
-
-app.get("/user/login", passport.authenticate("local", {
-    successRedirect: "/user/logged",
-    failureRedirect: "/user/login/failure",
-    failureFlash: true 
-}));
-
-app.post("/user/create", checkSchema(schemaUser), async (req, res) => {
-    let validation = validationResult(req);
-
-    if (validation.isEmpty()) {
-        const userData = matchedData(req);
-
-        try {
-            const hashedPassword = await hashPassword(userData.password);
-
-            const userObject = {
-                username: userData.username,
-                email: userData.email,
-                password: hashedPassword,
-            };
-
-            const response = await blogDb.insert(userObject);
-
-            console.log("User created:", response);
-            res.sendStatus(200);
-        } catch (error) {
-            console.error("Error creating user:", error);
-            res.status(500).send("Failed to create user.");
-        }
-    } else {
-        console.log(validation.array());
-        res.send("The validation didn't pass");
-    }
-});
+app.use("/user", userRouter);
 
 app.get("/", (req, res) => {
     res.send("Hello to the initial page!");
