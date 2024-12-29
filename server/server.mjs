@@ -4,12 +4,14 @@ import { config as dotenvConfig } from "dotenv";
 import passport from "passport";
 import { localStrategy } from "./auth-strategies/localUserAuth.mjs";
 import { googleAuthStrategy } from "./auth-strategies/googleAuth.mjs";
+import { facebookAuthStrategy } from "./auth-strategies/facebookAuth.mjs";
 
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import nano from "nano";
 
 import userRouter from "./routes/userRoute.mjs";
+import facebookRouter from "./routes/facebookAuthRoute.mjs";
 import googleRouter from "./routes/googleAuthRoute.mjs";
 
 dotenvConfig();
@@ -67,6 +69,7 @@ app.use(session({
         signed: true,
     }
 }))
+passport.use(facebookAuthStrategy);
 passport.use(localStrategy);
 passport.use(googleAuthStrategy);
 app.use(passport.initialize());
@@ -76,6 +79,7 @@ app.use(express.json());
 
 app.use("/user", userRouter);
 app.use("/google", googleRouter);
+app.use("/facebook", facebookRouter);
 
 app.get("/", (req, res) => {
     res.send("Hello to the initial page!");
