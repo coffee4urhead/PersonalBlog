@@ -37,7 +37,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.1.104:3000/user/logged');
+        const response = await fetch('http://192.168.1.101:3000/user/logged');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

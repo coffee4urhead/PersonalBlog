@@ -1,37 +1,79 @@
-import { Text, StyleSheet, Image, View, TextInput, ScrollView, Button, ImageBackground, GestureResponderEvent } from "react-native"
-import { LinearGradient } from "expo-linear-gradient"
+import {
+    Text,
+    StyleSheet,
+    Image,
+    Button,
+    Linking,
+    View,
+    TextInput,
+    ScrollView,
+    ImageBackground,
+    TouchableOpacity,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context"
-import { PressableEvent } from "react-native-gesture-handler/lib/typescript/components/Pressable/PressableProps";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RegisterForm() {
     const imageAspectRatio = 10 / 9;
     let [email, setEmail] = useState("");
+    let [username, setUsername] = useState("");
     let [password, setPassword] = useState("");
 
-    async function submitUserInfo() {
-        console.log(email);
-        console.log(password);
+    async function submitUserInfo(path: string) {
+        switch (path) {
+            case "google":
+                Linking.openURL(`http://192.168.1.101:3000/google/login`);
+                break;
+            case "facebook":
+                Linking.openURL(`http://192.168.1.101:3000/facebook/login`);
+                break;
+            case "user":
+                let reqBody = { email, password };
+                const userReq = await fetch(`http://192.168.1.101:3000/user/create`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(reqBody),
+                });
+                const userRes = await userReq.json();
+                console.log(userRes);
+                break;
+            default:
+                break;
+        }
 
         setEmail("");
         setPassword("");
     }
 
-    return (    
+    return (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
             <LinearGradient
-                colors={['#276CDB', '#27DBD8']}
+                colors={["#276CDB", "#27DBD8"]}
                 start={{ x: 1, y: 0.5 }}
                 end={{ x: 0.5, y: 1 }}
-                style={styles.gradient}>
-                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                style={styles.gradient}
+            >
+                <ScrollView contentContainerStyle={{ flex: 1 }}>
                     <SafeAreaView style={styles.overlay}>
+                        <Image
+                            source={require("../../assets/images/News article resources/Octo.png")}
+                            style={[styles.octo, { height: 300 / imageAspectRatio }]}
+                        />
 
-                        <Image source={require("../../assets/images/News article resources/Octo.png")} style={[styles.octo, { height: 300 / imageAspectRatio }]}></Image>
-
-                        <ImageBackground source={require("../../assets/images/News article resources/dddepth-227.jpg")} resizeMode="cover" style={styles.formContainer}>
-
+                        <ImageBackground
+                            source={require("../../assets/images/News article resources/dddepth-227.jpg")}
+                            resizeMode="cover"
+                            style={styles.formContainer}
+                        >
                             <View style={styles.form}>
+                                <View style={styles.submitContent}>
+                                    <Text>Username</Text>
+                                    <TextInput placeholder="Submit your username here..." style={styles.inputBorders} onChangeText={(e) => setUsername(e)} value={username}></TextInput>
+                                </View>
+
                                 <View style={styles.submitContent}>
                                     <Text>Email</Text>
                                     <TextInput placeholder="Submit your email here..." style={styles.inputBorders} onChangeText={(e) => setEmail(e)} value={email}></TextInput>
@@ -44,17 +86,44 @@ export default function RegisterForm() {
 
                                 <View style={styles.buttonCont}>
                                     <Button title="Log in"></Button>
-                                    <Button title="Create account" onPress={() => submitUserInfo()}></Button>
+                                    <Button title="Create account" onPress={() => submitUserInfo("user")}></Button>
+                                </View>
+
+                                <View style={styles.otherStrategies}>
+                                    <TouchableOpacity
+                                        style={styles.facebookBtn}
+                                        onPress={() => submitUserInfo("facebook")}
+                                    >
+                                        <Image
+                                            source={require("../../assets/images/News article resources/icons/facebook-logo.png")}
+                                            style={styles.logo}
+                                        />
+                                        <Text style={styles.socialText}>Log in with Facebook</Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={styles.googleBtn}
+                                        onPress={() => submitUserInfo("google")}
+                                    >
+                                        <Image
+                                            source={require("../../assets/images/News article resources/icons/google-logo.png")}
+                                            style={styles.logo}
+                                        />
+                                        <Text style={styles.socialText}>Log in with Google</Text>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
                         </ImageBackground>
                     </SafeAreaView>
 
-                    <Image style={styles.alien} source={require("../../assets/images/News article resources/Alien.png")}></Image>
+                    <Image
+                        style={styles.alien}
+                        source={require("../../assets/images/News article resources/Alien.png")}
+                    />
                 </ScrollView>
             </LinearGradient>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -63,13 +132,14 @@ const styles = StyleSheet.create({
     },
     overlay: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        boxShadow: "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset",
+        justifyContent: "center",
+        alignItems: "center",
+        boxShadow:
+            "rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset",
     },
     formContainer: {
         width: 400,
-        height: 500,
+        height: 600,
         justifyContent: "center",
         alignItems: "center",
         borderWidth: 3,
@@ -81,7 +151,7 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         padding: 20,
         width: 300,
-        height: 300,
+        height: 500,
         backgroundColor: "black",
         borderRadius: 12,
         gap: 12,
@@ -109,16 +179,55 @@ const styles = StyleSheet.create({
     alien: {
         position: "absolute",
         top: "70%",
-        left: "50%",
-        transform: [{ rotateY: "180deg" }, { rotateX: "20deg" }],
-        width: 200,
-        height: 200,
+        left: "75%",
+        transform: [{ rotateY: "180deg" }, { rotateX: "40deg" }],
+        width: 100,
+        height: 100,
     },
     octo: {
         width: 200,
         position: "absolute",
         zIndex: 1,
         transform: [{ rotate: "90deg" }],
-        bottom: "70%",
-    }
-})
+        bottom: "82%",
+    },
+    otherStrategies: {
+        flex: 1,
+        alignItems: "center",
+        flexDirection: "column",
+        justifyContent: "space-evenly",
+    },
+    facebookBtn: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#1877F2",
+        padding: 10,
+        borderRadius: 5,
+        width: "100%",
+        justifyContent: "center",
+    },
+    googleBtn: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#FFFFFF",
+        padding: 10,
+        borderRadius: 5,
+        width: "100%",
+        justifyContent: "center",
+    },
+    logo: {
+        width: 20,
+        height: 20,
+        marginRight: 10,
+    },
+    socialText: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "white",
+    },
+    buttonText: {
+        fontSize: 16,
+        color: "white",
+        fontWeight: "bold",
+    },
+});
