@@ -13,6 +13,7 @@ export type HomeStackParamList = {
     Account: undefined;
     AccountPostScreen: undefined;
     FullPost: { postId: number }; 
+    RegisterScreen: undefined;
     LoginScreen: undefined;
 };
   

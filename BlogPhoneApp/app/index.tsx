@@ -23,17 +23,11 @@ export default function App() {
 
             return <Ionicons key={iconName} name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: 'tomato',
-          tabBarInactiveTintColor: 'gray',
-          headerTitleAlign: "center",
           tabBarStyle: {
             backgroundColor: '#276cdb',
             height: 60,
           },
-          headerStyle: {
-            backgroundColor: '#276cdb',
-            height: 60,
-          },
+          headerShown: false,
           animation: "shift",
         })}>
         <Tab.Screen name="HomeTab" component={HomeStack} />

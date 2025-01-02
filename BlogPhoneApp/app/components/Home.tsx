@@ -14,7 +14,7 @@ export default function Home() {
 
   const handleNavigateToLogin = () => {
     setModalVisible(false);
-    navigation.navigate('LoginScreen');
+    navigation.navigate('RegisterScreen');
   };
 
   const handleNavigateToFullPost = (paramNav: NativeStackNavigationProp<HomeStackParamList>, postId: number) => {

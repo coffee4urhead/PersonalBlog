@@ -10,8 +10,10 @@ import {
     ImageBackground,
     TouchableOpacity,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { HomeStackParamList } from "./Card";
 import { useState } from "react";
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type ErrorObject = {
@@ -24,6 +26,8 @@ type ErrorObject = {
 }
 
 export default function RegisterForm() {
+    const navigator = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
+
     const imageAspectRatio = 10 / 9;
     let [email, setEmail] = useState("");
     let [username, setUsername] = useState("");
@@ -45,19 +49,6 @@ export default function RegisterForm() {
         })
     }
 
-    async function initializeSession() {
-        let reqBody = { username, email, password };
-        const userReq = await fetch(`http://192.168.1.102:3000/user/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(reqBody),
-        });
-        const userRes = await userReq.json();
-        console.log(userRes);
-    }
-
     async function submitUserInfo(path: string) {
         setErrorEmail("");
         setErrorPassword("");
@@ -72,21 +63,35 @@ export default function RegisterForm() {
                 break;
             case "user":
                 let reqBody = { username, email, password };
-                const userReq = await fetch(`http://192.168.1.102:3000/user/create`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(reqBody),
-                });
-                const userRes = await userReq.json();
+                try {
+                    const userReq = await fetch(`http://192.168.1.102:3000/user/create`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(reqBody),
+                    });
+                    
+                    if(userReq.ok) {
+                        const userRes = await userReq.json();
+                        console.log(userRes.message);
 
-                { userRes ? assignErrorMessages(userRes) : null }
-
-                setEmail("");
-                setPassword("");
-                setUsername("");
-
+                        navigator.navigate("LoginScreen");
+                    } else {
+                        const errorData = await userReq.json();
+                        console.error("Registration failed:", errorData);
+                        alert("Registration failed: " + JSON.stringify(errorData));
+                        { errorData ? assignErrorMessages(errorData) : null }
+                    }
+                    
+                }  catch (error) {
+                    console.error("Error during registration:", error);
+                    alert("An error occurred during registration.");
+                } finally {
+                    setEmail("");
+                    setPassword("");
+                    setUsername("");
+                }
                 break;
             default:
                 break;
@@ -95,13 +100,7 @@ export default function RegisterForm() {
     }
 
     return (
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-            <LinearGradient
-                colors={["#276CDB", "#27DBD8"]}
-                start={{ x: 1, y: 0.5 }}
-                end={{ x: 0.5, y: 1 }}
-                style={styles.gradient}
-            >
+        <View style={{ flex: 1, alignItems: "flex-end", backgroundColor: "#276CDB"}}>
                 <ScrollView contentContainerStyle={{ flex: 1 }}>
                     <SafeAreaView style={styles.overlay}>
                         <Image
@@ -136,7 +135,7 @@ export default function RegisterForm() {
                                 </View>
 
                                 <View style={styles.buttonCont}>
-                                    <Button title="Log in" onPress={() => initializeSession}></Button>
+                                    <Button title="Log in" onPress={() => navigator.navigate("LoginScreen")}></Button>
                                     <Button title="Create account" onPress={() => submitUserInfo("user")}></Button>
                                 </View>
 
@@ -172,7 +171,6 @@ export default function RegisterForm() {
                         source={require("../../assets/images/News article resources/Alien.png")}
                     />
                 </ScrollView>
-            </LinearGradient>
         </View>
     );
 }
@@ -240,7 +238,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         zIndex: 1,
         transform: [{ rotate: "90deg" }],
-        bottom: "82%",
+        bottom: "79%",
     },
     otherStrategies: {
         flex: 1,
