@@ -74,7 +74,9 @@ passport.use(localStrategy);
 passport.use(googleAuthStrategy);
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors());
+app.use(cors({
+    origin: ['http://192.168.1.102:3000'],
+}));
 app.use(express.json());
 
 app.use("/user", userRouter);
@@ -85,6 +87,6 @@ app.get("/", (req, res) => {
     res.send("Hello to the initial page!");
 })
 
-app.listen(3000, () => {
+app.listen(3000, "0.0.0.0", () => {
     console.log("App listening on port 3000!");
 });
