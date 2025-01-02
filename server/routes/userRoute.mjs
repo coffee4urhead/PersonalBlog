@@ -27,7 +27,7 @@ userRouter.get("/login/failure", (req, res) => {
     res.status(401).json({ message: "Login failed. Invalid username or password." });
 });
 
-userRouter.get("/login", passport.authenticate("local", {
+userRouter.post("/login", passport.authenticate("local", {
     successRedirect: "/user/logged",
     failureRedirect: "/user/login/failure",
     failureFlash: true
@@ -57,8 +57,7 @@ userRouter.post("/create", checkSchema(schemaUser), async (req, res) => {
             res.status(500).send("Failed to create user.");
         }
     } else {
-        console.log(validation.array());
-        res.send("The validation didn't pass");
+        res.json(validation.array());
     }
 });
 
