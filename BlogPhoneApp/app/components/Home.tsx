@@ -37,7 +37,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://192.168.1.101:3000/user/logged');
+        const response = await fetch('http://192.168.1.102:3000/user/logged');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -97,20 +97,22 @@ export default function Home() {
             </Text>
 
             <Modal visible={!isUserLoggedIn && modalVisible} transparent={true} animationType="slide">
-              <View style={styles.modalContainer}>
-                <Text style={styles.modalText}>You need to log in to access this feature.</Text>
-                <Text style={styles.modalText}>By signing in you can: </Text>
+              <View style={styles.modalOverlay}>
+                <View style={styles.modalContainer}>
+                  <Text style={styles.modalText}>You need to log in to access this feature.</Text>
+                  <Text style={styles.modalText}>By signing in you can: </Text>
 
-                <FlatList
-                  data={data}
-                  renderItem={renderItem}
-                  keyExtractor={(item, index) => index.toString()} />
+                  <FlatList
+                    data={data}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => index.toString()} />
 
-                <View style={styles.buttonCont}>
-                  <Button title="Log In" onPress={handleNavigateToLogin} />
-                  <Button title="Cancel" onPress={() => setModalVisible(false)} color="red" />
+                  <View style={styles.buttonCont}>
+                    <Button title="Log In" onPress={handleNavigateToLogin} />
+                    <Button title="Cancel" onPress={() => setModalVisible(false)} color="red" />
+                  </View>
+
                 </View>
-
               </View>
             </Modal>
 
@@ -204,10 +206,24 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     padding: 12,
-    flex: 1,
+    width: 400,
+    height: 400,
     justifyContent: "center",
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(255,255,255, 0.8)',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    margin: 12,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 12,
   },
   buttonCont: {
     gap: 20,
@@ -215,7 +231,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  modalText: { fontSize: 25, color: 'white', marginBottom: 24, fontWeight: "bold" },
+  modalText: { fontSize: 20, color: 'white', marginBottom: 24, fontWeight: "bold" },
   listItem: {
     padding: 12,
     flexDirection: 'row',

@@ -14,23 +14,65 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+type ErrorObject = {
+    location: string,
+    body: string,
+    msg: string,
+    path: string,
+    type: string,
+    value: string
+}
+
 export default function RegisterForm() {
     const imageAspectRatio = 10 / 9;
     let [email, setEmail] = useState("");
     let [username, setUsername] = useState("");
     let [password, setPassword] = useState("");
 
+    let [errorEmail, setErrorEmail] = useState("");
+    let [errorUsername, setErrorUsername] = useState("");
+    let [errorPassword, setErrorPassword] = useState("");
+
+    function assignErrorMessages(errorObject: ErrorObject[]) {
+        errorObject.forEach((obj) => {
+            if (obj.path === "username") {
+                setErrorUsername(obj.msg);
+            } else if (obj.path === "password") {
+                setErrorPassword(obj.msg);
+            } else if (obj.path === "email") {
+                setErrorEmail(obj.msg);
+            }
+        })
+    }
+
+    async function initializeSession() {
+        let reqBody = { username, email, password };
+        const userReq = await fetch(`http://192.168.1.102:3000/user/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(reqBody),
+        });
+        const userRes = await userReq.json();
+        console.log(userRes);
+    }
+
     async function submitUserInfo(path: string) {
+        setErrorEmail("");
+        setErrorPassword("");
+        setErrorUsername("");
+
         switch (path) {
             case "google":
-                Linking.openURL(`http://192.168.1.101:3000/google/login`);
+                Linking.openURL(`http://192.168.1.102:3000/google/login`);
                 break;
             case "facebook":
-                Linking.openURL(`http://192.168.1.101:3000/facebook/login`);
+                Linking.openURL(`http://192.168.1.102:3000/facebook/login`);
                 break;
             case "user":
-                let reqBody = { email, password };
-                const userReq = await fetch(`http://192.168.1.101:3000/user/create`, {
+                let reqBody = { username, email, password };
+                const userReq = await fetch(`http://192.168.1.102:3000/user/create`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -38,14 +80,18 @@ export default function RegisterForm() {
                     body: JSON.stringify(reqBody),
                 });
                 const userRes = await userReq.json();
-                console.log(userRes);
+
+                { userRes ? assignErrorMessages(userRes) : null }
+
+                setEmail("");
+                setPassword("");
+                setUsername("");
+
                 break;
             default:
                 break;
         }
 
-        setEmail("");
-        setPassword("");
     }
 
     return (
@@ -71,21 +117,26 @@ export default function RegisterForm() {
                             <View style={styles.form}>
                                 <View style={styles.submitContent}>
                                     <Text>Username</Text>
+                                    {errorUsername ? <Text style={styles.errorText}>*{errorUsername}</Text> : null}
+
                                     <TextInput placeholder="Submit your username here..." style={styles.inputBorders} onChangeText={(e) => setUsername(e)} value={username}></TextInput>
                                 </View>
 
                                 <View style={styles.submitContent}>
                                     <Text>Email</Text>
+                                    {errorEmail ? <Text style={styles.errorText}>*{errorEmail}</Text> : null}
+
                                     <TextInput placeholder="Submit your email here..." style={styles.inputBorders} onChangeText={(e) => setEmail(e)} value={email}></TextInput>
                                 </View>
 
                                 <View style={styles.submitContent}>
                                     <Text>Password</Text>
+                                    {errorPassword ? <Text style={styles.errorText}>*{errorPassword}</Text> : null}
                                     <TextInput placeholder="Submit your password here..." style={styles.inputBorders} onChangeText={(e) => setPassword(e)} value={password}></TextInput>
                                 </View>
 
                                 <View style={styles.buttonCont}>
-                                    <Button title="Log in"></Button>
+                                    <Button title="Log in" onPress={() => initializeSession}></Button>
                                     <Button title="Create account" onPress={() => submitUserInfo("user")}></Button>
                                 </View>
 
@@ -229,5 +280,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "white",
         fontWeight: "bold",
+    },
+    errorText: {
+        color: "red",
+        fontStyle: "italic",
+        textDecorationLine: "underline",
+        textDecorationStyle: "double",
+        textDecorationColor: "red",
+        marginLeft: 10,
     },
 });
