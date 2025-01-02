@@ -51,7 +51,7 @@ userRouter.post("/create", checkSchema(schemaUser), async (req, res) => {
             const response = await blogDb.insert(userObject);
 
             console.log("User created:", response);
-            res.sendStatus(200);
+            res.status(201).json({ message: "User created successfully. Please log in." });
         } catch (error) {
             console.error("Error creating user:", error);
             res.status(500).send("Failed to create user.");
