@@ -87,6 +87,6 @@ app.get("/", (req, res) => {
     res.send("Hello to the initial page!");
 })
 
-app.listen(3000, "0.0.0.0", () => {
+app.listen(3000, () => {
     console.log("App listening on port 3000!");
 });

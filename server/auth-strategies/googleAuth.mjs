@@ -25,7 +25,7 @@ const googleAuthStrategy = new GoogleStrategy(
     {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://192.168.1.102:3000/google/login/redirect",
+        callbackURL: `${process.env.GENERAL_CALLBACK_URL}/google/login/redirect`,
         scope: ["profile", "email"],
     },
     async (accessToken, refreshToken, profile, done) => {

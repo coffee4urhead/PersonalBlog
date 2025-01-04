@@ -25,7 +25,7 @@ const facebookAuthStrategy = new FacebookStrategy(
     {
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-        callbackURL: process.env.FACEBOOK_CALLBACK_URL || "http://192.168.1.102:3000/facebook/login/redirect",
+        callbackURL: process.env.GENERAL_CALLBACK_URL,
         profileFields: ["id", "emails", "name", "displayName"],
     },
     async (accessToken, refreshToken, profile, done) => {
