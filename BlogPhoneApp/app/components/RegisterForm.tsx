@@ -56,15 +56,15 @@ export default function RegisterForm() {
 
         switch (path) {
             case "google":
-                Linking.openURL(`http://192.168.1.102:3000/google/login`);
+                Linking.openURL(`https://6331-151-237-68-134.ngrok-free.app/google/login`);
                 break;
             case "facebook":
-                Linking.openURL(`http://192.168.1.102:3000/facebook/login`);
+                Linking.openURL(`https://6331-151-237-68-134.ngrok-free.app/facebook/login`);
                 break;
             case "user":
                 let reqBody = { username, email, password };
                 try {
-                    const userReq = await fetch(`http://192.168.1.102:3000/user/create`, {
+                    const userReq = await fetch(`https://6331-151-237-68-134.ngrok-free.app/user/create`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
