@@ -31,7 +31,7 @@ googleRouter.get("/logout", (req, res) => {
 });
 
 googleRouter.get("/login", passport.authenticate("google", {
-  successRedirect: "/login/redirect",
+  successRedirect: "google/login/redirect",
   failureRedirect: "/google/login/failure",
   failureFlash: true
 }));
