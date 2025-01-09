@@ -37,7 +37,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://6331-151-237-68-134.ngrok-free.app/user/logged');
+        const response = await fetch('https://561a-151-237-68-134.ngrok-free.app/user/logged');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
