@@ -1,8 +1,6 @@
-import { ActivityIndicator, Pressable, View, Image, Text, StyleSheet, Platform } from 'react-native';
+import { ActivityIndicator, Pressable, View, Image, Text, StyleSheet } from 'react-native';
 import { useFonts } from 'expo-font';
-import React, { useEffect, useState } from 'react';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { User } from './Account';
+import React, { useEffect } from 'react';
 
 interface ICardProps {
     postId: number;
@@ -11,7 +9,7 @@ interface ICardProps {
 
 export type HomeStackParamList = {
     Home: undefined;
-    Account: { user: User };
+    Account: undefined;
     AccountPostScreen: undefined;
     FullPost: { postId: number }; 
     RegisterScreen: undefined;

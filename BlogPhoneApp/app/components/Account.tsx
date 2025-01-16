@@ -3,22 +3,11 @@ import Card from "./Card"
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { HomeStackParamList } from "./Card"
-import { useRoute, RouteProp } from '@react-navigation/native';
-
-
-export type User = {
-    username: string, 
-    password: string,
-    email: string,
-}
+import { RouteProp } from '@react-navigation/native';
 
 type RouteParams = RouteProp<HomeStackParamList, 'Account'>;
 
 export default function Account() {
-    const route = useRoute<RouteParams>();
-    const { user } = route.params;
-
-  console.log(user);
     const navigation = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
 
     const handleNavigateToFullPost = (paramNav: NativeStackNavigationProp<HomeStackParamList>, postId: number) => {

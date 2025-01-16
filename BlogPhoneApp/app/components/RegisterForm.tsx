@@ -11,10 +11,16 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { HomeStackParamList } from "./Card";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as Google from 'expo-auth-session/providers/google';
+import { GOOGLE_CLIENT_ID } from '@env';
+import * as WebBrowser from 'expo-web-browser';
+
+
+WebBrowser.maybeCompleteAuthSession();
 
 type ErrorObject = {
     location: string,
@@ -27,7 +33,31 @@ type ErrorObject = {
 
 export default function RegisterForm() {
     const navigator = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        clientId: GOOGLE_CLIENT_ID,
+        redirectUri: 'myapp://redirect',
+      });
 
+      useEffect(() => {
+        if (response?.type === 'success') {
+            const { authentication } = response;
+            //@ts-ignore
+            fetchUserInfo(authentication.accessToken);
+        }
+    }, [response]);
+
+    const fetchUserInfo = async (token: string) => {
+        try {
+            const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const userInfo = await response.json();
+            console.log(userInfo);
+            
+        } catch (error) {
+            console.error('Failed to fetch user info', error);
+        }
+    };
     const imageAspectRatio = 10 / 9;
     let [email, setEmail] = useState("");
     let [username, setUsername] = useState("");
@@ -56,15 +86,15 @@ export default function RegisterForm() {
 
         switch (path) {
             case "google":
-                Linking.openURL(`https://561a-151-237-68-134.ngrok-free.app/google/login`);
+                Linking.openURL(`https://e839-151-237-68-134.ngrok-free.app/google/login`);
                 break;
             case "facebook":
-                Linking.openURL(`https://561a-151-237-68-134.ngrok-free.app/facebook/login`);
+                Linking.openURL(`https://e839-151-237-68-134.ngrok-free.app/facebook/login`);
                 break;
             case "user":
                 let reqBody = { username, email, password };
                 try {
-                    const userReq = await fetch(`https://561a-151-237-68-134.ngrok-free.app/user/create`, {
+                    const userReq = await fetch(`https://e839-151-237-68-134.ngrok-free.app/user/create`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -153,7 +183,9 @@ export default function RegisterForm() {
 
                                     <TouchableOpacity
                                         style={styles.googleBtn}
-                                        onPress={() => submitUserInfo("google")}
+                                        onPress={() => {
+                                            promptAsync();
+                                        }}
                                     >
                                         <Image
                                             source={require("../../assets/images/News article resources/icons/google-logo.png")}
