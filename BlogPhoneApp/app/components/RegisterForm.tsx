@@ -16,7 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Google from 'expo-auth-session/providers/google';
-import { GOOGLE_CLIENT_ID } from '@env';
+// import { GOOGLE_CLIENT_ID } from '@env';
 import * as WebBrowser from 'expo-web-browser';
 
 
@@ -34,7 +34,7 @@ type ErrorObject = {
 export default function RegisterForm() {
     const navigator = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
     const [request, response, promptAsync] = Google.useAuthRequest({
-        clientId: GOOGLE_CLIENT_ID,
+        // clientId: GOOGLE_CLIENT_ID,
         redirectUri: 'myapp://redirect',
       });
 
